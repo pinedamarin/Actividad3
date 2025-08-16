@@ -1,0 +1,54 @@
+<?php
+// Línea 1: Iniciar o reanudar la sesión
+session_start();
+
+// Línea 2: Verificar si el contador ya existe en la sesión
+// Si no existe, lo creamos y lo inicializamos en 0.
+if (!isset($_SESSION['contador'])) {
+    $_SESSION['contador'] = 0;
+}
+
+// Línea 3: Procesar la solicitud del formulario
+// Verificamos si la página fue cargada por un método POST (es decir, si se envió el formulario).
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Línea 4: Incrementar el contador si se presionó el botón "Incrementar"
+    if (isset($_POST['incrementar'])) {
+        $_SESSION['contador']++;
+    }
+    // Línea 5: Reiniciar el contador si se presionó el botón "Reiniciar"
+    if (isset($_POST['reiniciar'])) {
+        $_SESSION['contador'] = 0;
+    }
+}
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Botón Contador con PHP</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; margin-top: 50px; background-color: #f0f0f0; }
+        .contador { font-size: 5rem; margin: 20px; color: #333; }
+        .boton { font-size: 1.2rem; padding: 10px 20px; margin: 5px; cursor: pointer; border: none; border-radius: 5px; color: white; }
+        .incrementar { background-color: #28a745; }
+        .reiniciar { background-color: #dc3545; }
+    </style>
+</head>
+<body>
+
+    <h1>Botón Contador en PHP</h1>
+
+    <p>Este contador mantiene su valor entre recargas de la página.</p>
+
+    <div class="contador">
+        <?php echo $_SESSION['contador']; ?>
+    </div>
+
+    <form method="post">
+        <button type="submit" name="incrementar" class="boton incrementar">Incrementar (+)</button>
+        <button type="submit" name="reiniciar" class="boton reiniciar">Reiniciar</button>
+    </form>
+
+</body>
+</html>

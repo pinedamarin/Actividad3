@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zona Deportiva Wpm - Equipa tu Pasión</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        /* --- Estilos de Zona Deportiva --- */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .banner-bg {
+            background-image: url('https://i.imgur.com/gPGjgqs.jpg');
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        /* --- Estilos del Generador de Cuentos --- */
+        .cuento-container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            box-sizing: border-box;
+            margin: auto; /* Centra el contenedor */
+        }
+        .cuento-container h1 {
+            color: #115E59; /* Tono Cian oscuro para consistencia*/
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 2em;
+            font-weight: bold;
+        }
+        .cuento-container .form-group {
+            margin-bottom: 1rem;
+        }
+        .cuento-container label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #333;
+        }
+        .cuento-container input[type="text"],
+        .cuento-container input[type="number"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            color: #333;
+        }
+        .cuento-container .btn {
+            width: 100%;
+            padding: 0.85rem;
+            border: none;
+            border-radius: 6px;
+            background-color: #0d9488; /* Cian de la página principal */
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        .cuento-container .btn:hover {
+            background-color: #0f766e; /* Tono más oscuro de cian */
+        }
+        .cuento-container .btn-secondary {
+            background-color: #155e75; /* Cian secundario */
+        }
+        .cuento-container .btn-secondary:hover {
+            background-color: #164e63;
+        }
+        #cuentoResultado {
+            display: none;
+        }
+        #contenidoCuento {
+            line-height: 1.6;
+            color: #333;
+        }
+        #contenidoCuento h2 {
+            text-align: center;
+            color: #0d9488;
+        }
+        .error-message {
+            color: #d93025;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        /* Estilos para el PDF del cuento */
+        @media print {
+            body > *:not(#cuentoResultado) {
+                display: none;
+            }
+            #cuentoResultado, #contenidoCuento {
+                display: block !important;
+                box-shadow: none;
+                border: none;
+            }
+            #contenidoCuento {
+                font-family: 'Times New Roman', Times, serif;
+                color: #000000;
+                line-height: 1.5;
+            }
+            #contenidoCuento h2 {
+                color: #2c3e50 !important;
+                font-size: 24pt;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            #contenidoCuento p {
+                font-size: 12pt;
+                text-align: justify;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <header id="inicio" class="relative h-screen min-h-[600px] flex items-center justify-center text-white banner-bg">
+        <div class="absolute inset-0 bg-black opacity-60"></div>
+        <div class="relative z-10 text-center p-4">
+            <div class="flex justify-center items-center mb-4">
+                <svg class="w-16 h-16 text-cyan-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12.75 3.03v.568c0 .334.148.65.405.864l1.068.89c.442.369.535 1.01.216 1.49l-.51.766a2.25 2.25 0 0 1-1.161.886l-.143.048a1.125 1.125 0 0 0-.928.928.143.048l-1.161.886a2.25 2.25 0 0 1-1.49.216l-.766-.51a2.25 2.25 0 0 0-1.49-.216l-.89 1.068a1.125 1.125 0 0 0-.864.405v.568c-.334 0-.65.148-.864.405l-.89 1.068c-.369.442-1.01.535-1.49.216l-.766-.51a2.25 2.25 0 0 1-.886-1.161l-.048-.143a1.125 1.125 0 0 0-.928-.928l-.048-.143a2.25 2.25 0 0 1 .216-1.49l.51-.766c.442-.369 1.01-.535 1.49-.216l1.068.89c.257.215.571.334.864.405h.568c0-.334-.148-.65-.405-.864l-1.068-.89a2.25 2.25 0 0 1-.216-1.49l.51-.766a2.25 2.25 0 0 0 .216-1.49l.89-1.068a1.125 1.125 0 0 0 .405-.864h.568c.334 0 .65-.148.864-.405l.89-1.068c.369-.442 1.01-.535 1.49-.216l.766.51c.369.442.535 1.01.216 1.49l-.51.766a2.25 2.25 0 0 1-1.161.886l-.143.048a1.125 1.125 0 0 0-.928.928l-.143.048a2.25 2.25 0 0 1-1.49.216l-.766-.51a2.25 2.25 0 0 0-1.49.216l-1.068.89a1.125 1.125 0 0 0-.864.405v.568c0 .334.148.65.405.864l1.068.89.048.143a1.125 1.125 0 0 0 .928.928l.143.048a2.25 2.25 0 0 1 1.161.886l.51.766c.319.48.858.784 1.49.216l1.068-.89c.257-.215.571-.334.864-.405h.568c0 .334-.148.65-.405-.864l-1.068.89a2.25 2.25 0 0 1-1.49.216l-.766-.51a2.25 2.25 0 0 0-1.49.216l-.89 1.068a1.125 1.125 0 0 0-.864.405v.568c-.334 0-.65.148-.864.405l-.89 1.068c-.369.442-1.01.535-1.49.216l-.766-.51a2.25 2.25 0 0 1-.886-1.161l-.048-.143a1.125 1.125 0 0 0-.928-.928l-.048-.143a2.25 2.25 0 0 1 .216-1.49l.51-.766c.442-.369 1.01-.535 1.49-.216l1.068.89c.257.215.571.334.864.405h.568a1.125 1.125 0 0 0 .864-.405l1.068-.89c.48-.319.784-.858.216-1.49l-.51-.766a2.25 2.25 0 0 1-1.161-.886l-.143-.048a1.125 1.125 0 0 0-.928-.928l-.143-.048a2.25 2.25 0 0 1-.216-1.49l.51-.766c.319-.48.858-.784 1.49-.216l1.068.89c.257.215.571.334.864.405h.568c0-.334.148-.65.405-.864l1.068-.89a2.25 2.25 0 0 0 .216-1.49l-.51-.766a2.25 2.25 0 0 1-.216-1.49l-.89-1.068a1.125 1.125 0 0 0-.405-.864v-.568c0-.334.148-.65.405-.864l.89-1.068c.369-.442 1.01-.535 1.49-.216l.766.51a2.25 2.25 0 0 1 .886 1.161l.048.143a1.125 1.125 0 0 0 .928.928l.048.143a2.25 2.25 0 0 1-.216 1.49l-.51.766a2.25 2.25 0 0 0-.216 1.49l-.89 1.068a1.125 1.125 0 0 0-.405.864v.568c.334 0 .65.148.864.405l.89 1.068c.442.369.535 1.01.216 1.49l-.51.766a2.25 2.25 0 0 1-1.161.886l-.143.048a1.125 1.125 0 0 0-.928.928l-.143.048a2.25 2.25 0 0 1-1.49.216l-.766-.51a2.25 2.25 0 0 0-1.49.216l-1.068.89a1.125 1.125 0 0 0-.864.405v-.568a1.125 1.125 0 0 0 .405-.864l1.068-.89c.48-.319.784-.858.216-1.49l-.51-.766a2.25 2.25 0 0 1-1.161-.886l-.143-.048a1.125 1.125 0 0 0-.928-.928l-.143-.048a2.25 2.25 0 0 1-.216-1.49l.51-.766c.319-.48.858-.784 1.49-.216l1.068.89c.257.215.571.334.864.405h.568Z" />
+                </svg>
+                <h1 class="text-4xl md:text-5xl font-extrabold ml-3">Zona Deportiva WPM</h1>
+            </div>
+            <p class="text-xl md:text-2xl font-light mt-4 max-w-2xl mx-auto">Lleva tu entrenamiento al siguiente nivel con el mejor equipamiento del mercado.</p>
+        </div>
+    </header>
+
+    <nav id="navbar" class="bg-white/80 backdrop-blur-md shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="#inicio" class="flex-shrink-0 font-bold text-xl text-cyan-600">
+                        Zona Deportiva
+                    </a>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#nosotros" class="text-gray-600 hover:bg-gray-200 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Nuestra Tienda</a>
+                        <a href="#servicios" class="text-gray-600 hover:bg-gray-200 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Servicios</a>
+                        <a href="#contacto" class="text-gray-600 hover:bg-gray-200 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Contáctenos</a>
+                        <a href="#cotizacion" class="text-gray-600 hover:bg-gray-200 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Cotización</a>
+                        <a href="#cuento-generator" class="text-gray-600 hover:bg-gray-200 hover:text-gray-900 px-3 py-2 rounded-md text-sm font-medium">Generador de Cuentos</a>
+                    </div>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button id="mobile-menu-button" type="button" class="bg-gray-200 inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-200 focus:ring-white">
+                        <span class="sr-only">Abrir menú principal</span>
+                        <svg id="menu-icon-open" class="h-6 w-6 block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                        <svg id="menu-icon-close" class="h-6 w-6 hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="md:hidden hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#nosotros" class="text-gray-600 hover:bg-gray-200 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium">Nuestra Tienda</a>
+                <a href="#servicios" class="text-gray-600 hover:bg-gray-200 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium">Servicios</a>
+                <a href="#contacto" class="text-gray-600 hover:bg-gray-200 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium">Contáctenos</a>
+                <a href="#cotizacion" class="text-gray-600 hover:bg-gray-200 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium">Cotización</a>
+                <a href="#cuento-generator" class="text-gray-600 hover:bg-gray-200 hover:text-gray-900 block px-3 py-2 rounded-md text-base font-medium">Generador de Cuentos</a>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <section id="nosotros" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-base font-semibold text-cyan-600 tracking-wide uppercase">Nuestra Historia</h2>
+                    <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">Más que una tienda, una comunidad</p>
+                    <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
+                        Nacimos de la pasión por el deporte y el deseo de ofrecer a atletas, tanto aficionados como profesionales, el mejor equipamiento. Aquí no solo vendemos productos, ofrecemos soluciones.
+                    </p>
+                </div>
+
+                <div class="mt-12">
+                    <h3 class="text-2xl font-bold text-center text-gray-800 mb-8">Nuestro Equipo de Expertos</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        <div class="bg-gray-50 rounded-lg p-6 text-center shadow-lg transform hover:scale-105 transition-transform duration-300">
+                            <img class="w-24 h-24 rounded-full mx-auto mb-4 object-cover" src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" alt="Foto de Sofía Ramírez">
+                            <h4 class="text-xl font-semibold text-gray-900">Sofía Ramírez</h4>
+                            <p class="text-cyan-500 font-medium">Fundadora y Experta en Running</p>
+                            <p class="mt-2 text-gray-600 text-sm">Corredora de maratones y apasionada por el trail. Sofía te ayudará a encontrar el calzado y los accesorios ideales para devorar kilómetros.</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-6 text-center shadow-lg transform hover:scale-105 transition-transform duration-300">
+                            <img class="w-34 h-34 rounded-full mx-auto mb-4 object-cover" src="https://i.imgur.com/oUYNm7x.jpg" alt="Foto de Wveimar Alejandro PIneda">
+                            <h4 class="text-xl font-semibold text-gray-1000">Alejandro Pineda Marin</h4>
+                            <p class="text-cyan-500 font-medium">Especialista en Fitness</p>
+                            <p class="mt-2 text-gray-600 text-sm">Con 10+ años de experiencia, Alejandro te asesora en máquinas, pesas y suplementación para que logres tus objetivos de fuerza.</p>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-6 text-center shadow-lg transform hover:scale-105 transition-transform duration-300">
+                            <img class="w-24 h-24 rounded-full mx-auto mb-4 object-cover" src="https://images.unsplash.com/photo-1579758629938-03607ccdbaba?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3" alt="Foto de Laura Jiménez">
+                            <h4 class="text-xl font-semibold text-gray-900">Laura Jiménez</h4>
+                            <p class="text-cyan-500 font-medium">Gerente de Operaciones</p>
+                            <p class="mt-2 text-gray-600 text-sm">Laura se asegura de que tu experiencia de compra sea impecable, desde el clic hasta que recibes tu pedido en la puerta.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="servicios" class="py-20 bg-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-base font-semibold text-cyan-600 tracking-wide uppercase">Valor Agregado</h2>
+                    <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">Te Ayudamos a Superar tus Límites</p>
+                    <p class="mt-4 max-w-2xl mx-auto text-xl text-gray-500">
+                        No solo vendemos productos, te acompañamos en tu camino deportivo con servicios especializados.
+                    </p>
+                </div>
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white rounded-lg shadow-xl p-8 flex flex-col items-center text-center">
+                        <div class="bg-cyan-100 p-4 rounded-full">
+                            <svg class="w-10 h-10 text-cyan-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                            </svg>
+                        </div>
+                        <h4 class="mt-4 text-xl font-bold text-gray-900">Asesoramiento Personalizado</h4>
+                        <p class="mt-2 text-gray-600">Te ofrecemos una sesión virtual o presencial para analizar tus metas y recomendarte el equipamiento que realmente necesitas. Invierte de forma inteligente en tu rendimiento.</p>
+                    </div>
+                    <div class="bg-white rounded-lg shadow-xl p-8 flex flex-col items-center text-center">
+                        <div class="bg-cyan-100 p-4 rounded-full">
+                           <svg class="w-10 h-10 text-cyan-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.898 20.562L16.5 21.75l-.398-1.188a3.375 3.375 0 00-2.924-2.924l-1.188-.398 1.188-.398a3.375 3.375 0 002.924-2.924l.398-1.188.398 1.188a3.375 3.375 0 002.924 2.924l1.188.398-1.188.398a3.375 3.375 0 00-2.924 2.924z" />
+                            </svg>
+                        </div>
+                        <h4 class="mt-4 text-xl font-bold text-gray-900">Entrenamiento Personalizado</h4>
+                        <p class="mt-2 text-gray-600">Utilizamos tecnología para evaluar tu biomecánica al correr y recomendarte el calzado que corrija y optimice tu zancada, previniendo lesiones y mejorando tu eficiencia.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contacto" class="py-20 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center">
+                    <h2 class="text-base font-semibold text-cyan-600 tracking-wide uppercase">Estamos para ti</h2>
+                    <p class="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">Ponte en Contacto</p>
+                </div>
+                <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    <div class="space-y-6">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-cyan-500 text-white">
+                                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg leading-6 font-medium text-gray-900">Teléfono / WhatsApp</h4>
+                                <p class="mt-1 text-base text-gray-500 hover:text-cyan-600"><a href="https://wa.me/573001234567" target="_blank">3146388823</a></p>
+                            </div>
+                        </div>
+                         <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-cyan-500 text-white">
+                                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg leading-6 font-medium text-gray-900">Email</h4>
+                                <p class="mt-1 text-base text-gray-500">alejopinedamarin@zonadeportiva.co</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <div class="flex items-center justify-center h-12 w-12 rounded-md bg-cyan-500 text-white">
+                                    <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg>
+                                </div>
+                            </div>
+                            <div class="ml-4">
+                                <h4 class="text-lg leading-6 font-medium text-gray-900">Dirección</h4>
+                                <p class="mt-1 text-base text-gray-500">Carera 52 # xxxx, Aranjuez, Medellín, Colombia</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="rounded-lg overflow-hidden shadow-xl h-96">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d4807.386767884264!2d-75.55744692417548!3d6.293311297016925!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e1!3m2!1ses!2sco!4v1754154676764!5m2!1ses!2sco" width="800" height="600" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="cotizacion" class="py-20 bg-gray-100">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-cyan-700 rounded-2xl shadow-xl p-8 md:p-12 text-center">
+                    <h2 class="text-3xl font-extrabold text-white sm:text-4xl">Solicita una Cotización</h2>
+                    <p class="mt-4 text-lg text-cyan-100 max-w-2xl mx-auto">
+                        ¿Necesitas equipamiento para un equipo, gimnasio o empresa? Ofrecemos ventas al por mayor y paquetes personalizados.
+                    </p>
+                    <div class="mt-8">
+                        <p class="text-white font-medium">Próximamente podrás llenar tu solicitud directamente desde esta página.</p>
+                        <p class="mt-2 text-cyan-200">Por ahora, contáctanos a <a href="mailto:ventas@zonadeportiva.co" class="font-bold underline hover:text-white">ventas@zonadeportiva.co</a> para prepararte una oferta a tu medida.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="cuento-generator" class="py-20 bg-gray-50">
+            <div class="cuento-container">
+                <div id="formulario">
+                    <h1>Crea tu Propio Cuento</h1>
+                    <div class="form-group">
+                        <label for="nombres">Nombres y Apellidos:</label>
+                        <input type="text" id="nombres" name="nombres">
+                    </div>
+                    <div class="form-group">
+                        <label for="apodo">Apodo:</label>
+                        <input type="text" id="apodo" name="apodo">
+                    </div>
+                    <div class="form-group">
+                        <label for="cabello">Color de Cabello:</label>
+                        <input type="text" id="cabello" name="cabello">
+                    </div>
+                    <div class="form-group">
+                        <label for="ojos">Color de Ojos:</label>
+                        <input type="text" id="ojos" name="ojos">
+                    </div>
+                    <div class="form-group">
+                        <label for="edad">Edad:</label>
+                        <input type="number" id="edad" name="edad">
+                    </div>
+                    <div class="form-group">
+                        <label for="hobby">Hobby (solo uno):</label>
+                        <input type="text" id="hobby" name="hobby">
+                    </div>
+                    <button class="btn" onclick="generarCuento()">Crear mi cuento</button>
+                    <p id="error" class="error-message">Por favor, completa todos los campos.</p>
+                </div>
+        
+                <div id="cuentoResultado">
+                    <div id="contenidoCuento">
+                        <h2 id="tituloCuento"></h2>
+                        <p id="parrafoCuento"></p>
+                    </div>
+                    <div id="botonesAccion">
+                        <button class="btn btn-secondary" onclick="descargarPDF()">Descargar PDF</button>
+                        <button class="btn" onclick="reiniciar()">Crear otro cuento</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-800 text-white">
+        <div class="max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center">
+            <p>© 2025 Zona Deportiva. Todos los derechos reservados Medellin Ant.</p>
+            <p class="text-sm text-gray-400 mt-1">Diseñado para inspirar movimiento.</p>
+        </div>
+    </footer>
+
+    <script>
+        // --- SCRIPT PARA MENÚ MÓVIL ---
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIconOpen = document.getElementById('menu-icon-open');
+        const menuIconClose = document.getElementById('menu-icon-close');
+        const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+
+        const toggleMenu = () => {
+            mobileMenu.classList.toggle('hidden');
+            menuIconOpen.classList.toggle('hidden');
+            menuIconClose.classList.toggle('hidden');
+        };
+
+        mobileMenuButton.addEventListener('click', toggleMenu);
+
+        mobileMenuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (!mobileMenu.classList.contains('hidden')) {
+                    toggleMenu();
+                }
+            });
+        });
+        
+        // --- SCRIPTS PARA GENERADOR DE CUENTOS ---
+        function generarCuento() {
+            const nombres = document.getElementById('nombres').value.trim();
+            const apodo = document.getElementById('apodo').value.trim();
+            const cabello = document.getElementById('cabello').value.trim();
+            const ojos = document.getElementById('ojos').value.trim();
+            const edad = document.getElementById('edad').value.trim();
+            const hobby = document.getElementById('hobby').value.trim();
+            const errorElemento = document.getElementById('error');
+
+            if (!nombres || !apodo || !cabello || !ojos || !edad || !hobby) {
+                errorElemento.style.display = 'block';
+                return;
+            }
+            
+            errorElemento.style.display = 'none';
+
+            const titulo = `La Aventura de ${apodo}`;
+            const cuento = `En un reino lejano y lleno de magia, vivía una persona muy especial llamada ${nombres}, aunque todos sus amigos le conocían cariñosamente como ${apodo}. Con sus ${edad} años, era conocido por su valentía y su gran corazón. Su cabello, de un brillante color ${cabello}, ondeaba con el viento mientras que sus ojos de color ${ojos} reflejaban la curiosidad de quien siempre busca una nueva aventura.
+            <br><br>
+            A ${apodo} no le gustaban las tardes aburridas; su más grande pasión era ${hobby}. Podía pasar horas y horas practicando, convirtiéndose en el mejor de todo el reino. Un día, mientras se dedicaba a su hobby, descubrió un mapa antiguo que prometía llevarlo a un tesoro legendario. Sin dudarlo un segundo, ${apodo} empacó su mochila y se embarcó en el viaje más emocionante de su vida, demostrando que la verdadera aventura se encuentra al seguir aquello que más amas.`;
+
+            document.getElementById('formulario').style.display = 'none';
+            document.getElementById('cuentoResultado').style.display = 'block';
+            document.getElementById('tituloCuento').innerText = titulo;
+            document.getElementById('parrafoCuento').innerHTML = cuento;
+        }
+
+        function descargarPDF() {
+            const apodo = document.getElementById('apodo').value.trim() || 'Personaje';
+            const elemento = document.getElementById('cuentoResultado'); 
+            
+            const opt = {
+                margin:       [1, 0.8, 1, 0.8],
+                filename:     `Cuento-de-${apodo}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            html2pdf().from(elemento).set(opt).save();
+        }
+
+        function reiniciar() {
+            document.getElementById('nombres').value = '';
+            document.getElementById('apodo').value = '';
+            document.getElementById('cabello').value = '';
+            document.getElementById('ojos').value = '';
+            document.getElementById('edad').value = '';
+            document.getElementById('hobby').value = '';
+
+            document.getElementById('formulario').style.display = 'block';
+            document.getElementById('cuentoResultado').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Cuentos Personalizados</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        /* --- Estilos para la PANTALLA (sin cambios) --- */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px 0;
+            margin: 0;
+            color: #333;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        h1 {
+            color: #1877f2;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        .btn {
+            width: 100%;
+            padding: 0.85rem;
+            border: none;
+            border-radius: 6px;
+            background-color: #1877f2;
+            color: white;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+        .btn:hover {
+            background-color: #166fe5;
+        }
+        .btn-secondary {
+            background-color: #28a745;
+        }
+        .btn-secondary:hover {
+            background-color: #218838;
+        }
+        #cuentoResultado {
+            display: none;
+        }
+        #contenidoCuento {
+            line-height: 1.6;
+        }
+        #contenidoCuento h2 {
+            text-align: center;
+            color: #1877f2;
+        }
+        .error-message {
+            color: #d93025;
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 1rem;
+            display: none;
+        }
+        
+        /* --- PASO 1: AÑADIMOS ESTILOS SOLO PARA EL PDF --- */
+        @media print {
+            /* Ocultamos todo lo que no sea el cuento */
+            body > *:not(#cuentoResultado) {
+                display: none;
+            }
+            #cuentoResultado, #contenidoCuento {
+                display: block !important;
+                box-shadow: none;
+                border: none;
+            }
+
+            /* Estilo predeterminado del cuento para el PDF */
+            #contenidoCuento {
+                font-family: 'Times New Roman', Times, serif; /* Fuente clásica de libro */
+                color: #000000; /* Color de texto negro puro */
+                line-height: 1.5;
+            }
+
+            /* Estilo del título para el PDF */
+            #contenidoCuento h2 {
+                color: #2c3e50 !important; /* Color oscuro y formal */
+                font-size: 24pt;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            /* Estilo del párrafo para el PDF */
+            #contenidoCuento p {
+                font-size: 12pt;
+                text-align: justify; /* Texto justificado */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div id="formulario">
+            <h1>Crea tu Propio Cuento</h1>
+            <div class="form-group">
+                <label for="nombres">Nombres y Apellidos:</label>
+                <input type="text" id="nombres" name="nombres">
+            </div>
+            <div class="form-group">
+                <label for="apodo">Apodo:</label>
+                <input type="text" id="apodo" name="apodo">
+            </div>
+            <div class="form-group">
+                <label for="cabello">Color de Cabello:</label>
+                <input type="text" id="cabello" name="cabello">
+            </div>
+            <div class="form-group">
+                <label for="ojos">Color de Ojos:</label>
+                <input type="text" id="ojos" name="ojos">
+            </div>
+            <div class="form-group">
+                <label for="edad">Edad:</label>
+                <input type="number" id="edad" name="edad">
+            </div>
+            <div class="form-group">
+                <label for="hobby">Hobby (solo uno):</label>
+                <input type="text" id="hobby" name="hobby">
+            </div>
+            <button class="btn" onclick="generarCuento()">Crear mi cuento</button>
+            <p id="error" class="error-message">Por favor, completa todos los campos.</p>
+        </div>
+
+        <div id="cuentoResultado">
+            <div id="contenidoCuento">
+                <h2 id="tituloCuento"></h2>
+                <p id="parrafoCuento"></p>
+            </div>
+            <div id="botonesAccion">
+                <button class="btn btn-secondary" onclick="descargarPDF()">Descargar PDF</button>
+                <button class="btn" onclick="reiniciar()">Crear otro cuento</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generarCuento() {
+            const nombres = document.getElementById('nombres').value.trim();
+            const apodo = document.getElementById('apodo').value.trim();
+            const cabello = document.getElementById('cabello').value.trim();
+            const ojos = document.getElementById('ojos').value.trim();
+            const edad = document.getElementById('edad').value.trim();
+            const hobby = document.getElementById('hobby').value.trim();
+            const errorElemento = document.getElementById('error');
+
+            if (!nombres || !apodo || !cabello || !ojos || !edad || !hobby) {
+                errorElemento.style.display = 'block';
+                return;
+            }
+            
+            errorElemento.style.display = 'none';
+
+            const titulo = `La Aventura de ${apodo}`;
+            const cuento = `En un reino lejano y lleno de magia, vivía una persona muy especial llamada ${nombres}, aunque todos sus amigos le conocían cariñosamente como ${apodo}. Con sus ${edad} años, era conocido por su valentía y su gran corazón. Su cabello, de un brillante color ${cabello}, ondeaba con el viento mientras que sus ojos de color ${ojos} reflejaban la curiosidad de quien siempre busca una nueva aventura.
+            <br><br>
+            A ${apodo} no le gustaban las tardes aburridas; su más grande pasión era ${hobby}. Podía pasar horas y horas practicando, convirtiéndose en el mejor de todo el reino. Un día, mientras se dedicaba a su hobby, descubrió un mapa antiguo que prometía llevarlo a un tesoro legendario. Sin dudarlo un segundo, ${apodo} empacó su mochila y se embarcó en el viaje más emocionante de su vida, demostrando que la verdadera aventura se encuentra al seguir aquello que más amas.`;
+
+            document.getElementById('formulario').style.display = 'none';
+            document.getElementById('cuentoResultado').style.display = 'block';
+            document.getElementById('tituloCuento').innerText = titulo;
+            document.getElementById('parrafoCuento').innerHTML = cuento;
+        }
+
+        function descargarPDF() {
+            const apodo = document.getElementById('apodo').value.trim() || 'Personaje';
+            const elemento = document.getElementById('cuentoResultado'); // Apuntamos al contenedor principal del cuento
+            
+            // Ya no es necesario ocultar los botones manualmente si usamos bien el CSS de @media print
+            
+            const opt = {
+                margin:       [1, 0.8, 1, 0.8], // Arriba, Derecha, Abajo, Izquierda (en pulgadas)
+                filename:     `Cuento-de-${apodo}.pdf`,
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            html2pdf().from(elemento).set(opt).save();
+        }
+
+        function reiniciar() {
+            document.getElementById('nombres').value = '';
+            document.getElementById('apodo').value = '';
+            document.getElementById('cabello').value = '';
+            document.getElementById('ojos').value = '';
+            document.getElementById('edad').value = '';
+            document.getElementById('hobby').value = '';
+
+            document.getElementById('formulario').style.display = 'block';
+            document.getElementById('cuentoResultado').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
